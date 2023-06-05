@@ -31,6 +31,8 @@
     "react/jsx-filename-extension": 0,
     "react/jsx-one-expression-per-line": 0,
     "no-nested-ternary": 0,
-    "@typescript-eslint/no-explicit-any": "off"
+    "@typescript-eslint/no-explicit-any": "off",
+    "css-prop/no-unused-class": "off",
+    "react/no-unknown-property": ["error", { "ignore": ["css"] }]
   }
 }
