@@ -20,6 +20,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "jest.config.js", "/jest-setup.ts", "jest.setup.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "jest.config.js", "/jest-setup.ts", "jest.setup.js", "src/component/units/travelMap/travelMapDetail"],
   "exclude": ["node_modules"]
 }
