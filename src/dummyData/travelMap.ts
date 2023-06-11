@@ -12,6 +12,7 @@ export const dummyData = {
       recruitManNumber: "0/3",
       recruitWomanNumber: "0/2",
       recruitEtcNumber: null,
+      summeryImg: "#",
 
       adress: {
         nation: "대한민국",
@@ -40,6 +41,7 @@ export const dummyData = {
       recruitManNumber: "0/3",
       recruitWomanNumber: "0/2",
       recruitEtcNumber: "0/1",
+      summeryImg: "#",
 
       adress: {
         nation: "대한민국",
