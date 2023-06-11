@@ -5,14 +5,15 @@ import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocom
 
 import { useLoadScript } from "@react-google-maps/api";
 import SearchIcon from "@mui/icons-material/Search";
-import CloseIcon from "@mui/icons-material/Close";
 
 const GoogleTravelMap = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchResult, setSearchResult] = useState<{ lat: number; lng: number } | null>(null);
   const [mapCenter, setMapCenter] = useState({ lat: 37.5665, lng: 126.978 });
-  const libraries = useMemo(() => ["places"], []);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const libraries: ("places" | "drawing" | "geometry" | "localContext" | "visualization")[] = [
+    "places",
+  ];
   const {
     value,
     suggestions: { status, data },
@@ -25,18 +26,31 @@ const GoogleTravelMap = () => {
     setValue(e.target.value);
   };
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    // ...
-    getGeocode({ address: value })
-      .then((results) => getLatLng(results[0]))
-      .then(({ lat, lng }) => {
-        sendAddressToServer({ lat, lng });
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
+  useEffect(() => {
+    setValue(searchKeyword);
+  }, [searchKeyword]);
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY as string,
+    libraries: ["places"], // 변경된 부분
+  });
+
+  const handleSearch = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      // ...
+      getGeocode({ address: value })
+        .then((results) => getLatLng(results[0]))
+        .then(({ lat, lng }) => {
+          sendAddressToServer({ lat, lng });
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    },
+    [searchKeyword, setValue, value, isLoaded, status, data]
+  );
+
   const sendAddressToServer = (address: { lat: number; lng: number }) => {
     // 서버에 주소 정보를 전송하고 응답을 처리하는 비동기 함수를 구현합니다.
     // 응답을 받은 후 지도를 해당 위도와 경도로 이동시킵니다.
@@ -46,13 +60,30 @@ const GoogleTravelMap = () => {
       // 예시로 setSearchResult 함수를 사용하여 searchResult 상태를 업데이트하고,
       // 해당 위도와 경도로 지도를 이동시키는 로직을 추가합니다.
       setMapCenter(address);
-    }, 100);
+    }, 10);
   };
+  // useEffect(() => {
+  //   if (searchKeyword.trim() === "") {
+  //     clearSuggestions();
+  //     return;
+  //   }
 
-  const onCloseHandler = useCallback(() => {
-    setSearchKeyword("");
-    setValue("");
-  }, []);
+  //   const fetchSuggestions = async () => {
+  //     try {
+  //       const results = await getAutocomplete(searchKeyword);
+  //       setValue(searchKeyword);
+  //     } catch (error) {
+  //       console.error("Error fetching autocomplete suggestions:", error);
+  //     }
+  //   };
+
+  //   fetchSuggestions();
+  // }, [searchKeyword, setValue, clearSuggestions]);
+
+  // const onCloseHandler = useCallback(() => {
+  //   setSearchKeyword("");
+  //   setValue("");
+  // }, []);
 
   const mapOptions = useMemo<google.maps.MapOptions>(
     () => ({
@@ -68,19 +99,23 @@ const GoogleTravelMap = () => {
     console.log("Map Component Loaded...");
     setMapLoaded(true); // 로딩 상태 업데이트
   }, []);
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY as string,
-    libraries: libraries as any,
-  });
 
   if (!isLoaded) {
+    console.log("!!!!!!!!!!!!!!!!!!");
     return <p>loading...</p>;
   }
+  console.log("isload", isLoaded);
+
   return (
     <Container>
       <TopContainer>
         <SearchWrapper>
           <CusSearchIcon />
+          <script
+            src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}&libraries=places`}
+            async
+            defer
+          ></script>
           <form onSubmit={handleSearch}>
             <input placeholder="검색어를 입력하세요" onChange={handleInput} />
             {status === "OK" && (
@@ -90,9 +125,9 @@ const GoogleTravelMap = () => {
                 ))}
               </ul>
             )}
-            <button>
+            {/* <button>
               <CloseIcon onClick={onCloseHandler} />
-            </button>
+            </button> */}
           </form>
         </SearchWrapper>
       </TopContainer>
@@ -123,6 +158,7 @@ const TopContainer = styled.div`
   padding: 0.5rem;
   background-color: white;
   position: absolute;
+  border-radius: 30px;
   z-index: 999;
   margin-top: 1rem;
 `;
@@ -132,8 +168,8 @@ const BottomContainer = styled.div`
 const SearchWrapper = styled.div`
   width: 100%;
   height: 100%;
-  border: 1px solid blue;
-  border-radius: 0.5rem;
+  border: 1px solid whitesmoke;
+  border-radius: 30px;
   display: flex;
   justify-content: space-between;
   & form {

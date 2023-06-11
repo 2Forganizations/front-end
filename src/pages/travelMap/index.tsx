@@ -1,26 +1,18 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
-//compoents
-import TravelMapList from "../../component/units/travelMap/travelMapList";
-import GoogleMap from "../../component/units/travelMap/googleMap";
-import TravelMapDetail from "../../component/units/travelMap/travelMapDetail";
 
-const TravelMap = () => {
-  const [travelDetailModalIsOpen, setTravelDetailModalIsOpen] = useState(false);
-  const [selectTravelMapId, setSelectTravelMapId] = useState("");
+//compoents
+import TravelMap from "@/component/units/travelMap";
+
+const TravelMapPage = () => {
   return (
-    <Container>
-      <TravelMapList
-        setSelectTravelMapId={setSelectTravelMapId}
-        setTravelDetailModalIsOpen={setTravelDetailModalIsOpen}
-      />
-      <GoogleMap />
-      {travelDetailModalIsOpen && <TravelMapDetail selectTravelMapId={selectTravelMapId} />}
-    </Container>
+    <>
+      <TravelMap />
+    </>
   );
 };
 
-export default TravelMap;
+export default TravelMapPage;
 
 const Container = styled.div`
   width: 100%;
