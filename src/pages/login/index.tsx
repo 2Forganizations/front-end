@@ -1,4 +1,4 @@
-import LoginPage from "@/component/units/login/getUserInfo/GetUserInfoPage";
+import GetUserInfoPage from "@/component/units/login/getUserInfo/GetUserInfoPage";
 
 const Login = () => {
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=b7d842453c8caa996a491df05f55dc7d&redirect_uri=http://localhost:3000/login/oauth2/kakao&response_type=code`;
@@ -8,7 +8,7 @@ const Login = () => {
     window.location.href = KAKAO_AUTH_URL;
   };
 
-  return <LoginPage />;
+  return <GetUserInfoPage />;
 };
 
 export default Login;
